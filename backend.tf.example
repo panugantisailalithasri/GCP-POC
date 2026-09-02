@@ -1,0 +1,11 @@
+# Remote state for shared/local teams and Azure DevOps.
+# Local (optional):
+#   cp backend.tf.example backend.tf
+#   cp backend.hcl.example backend.hcl
+#   terraform init -backend-config=backend.hcl
+#
+# ADO copies this file to backend.tf before terraform init.
+
+terraform {
+  backend "gcs" {}
+}

@@ -16,6 +16,8 @@ terraform.rc
 terraform.tfvars
 *.auto.tfvars
 *.auto.tfvars.json
+backend.hcl
+backend.tf
 
 # Credentials
 *.json
