@@ -2,7 +2,7 @@
 
 Terraform for a regional Cloud Storage bucket that mirrors `freyr-ai-pac-superagent-agent-runtime`, using a POC bucket name.
 
-Work on this repo in GitHub so you can clone it locally. The same tree is what Azure DevOps will run later (`azure-pipelines.yml`).
+This repo is currently set up for local Terraform execution first.
 
 ## What this creates
 
@@ -55,7 +55,14 @@ gcloud config set project freyr-ai
 
 Bucket names are **globally unique**. If `freyr-ai-poc-storage` is taken, change `bucket_name`.
 
-Local state (fine for a first test on your machine):
+Quick start:
+
+```bash
+./scripts/local-terraform.sh plan
+./scripts/local-terraform.sh apply
+```
+
+Or run Terraform directly:
 
 ```bash
 terraform init
@@ -63,7 +70,7 @@ terraform plan
 terraform apply
 ```
 
-Shared / pipeline state (use this before you point ADO at the repo). Create a **separate** state bucket once — do not store state in the POC resource bucket:
+Optional remote state for local use: create a **separate** state bucket once — do not store state in the POC resource bucket:
 
 ```bash
 gcloud storage buckets create gs://freyr-ai-poc-tfstate \
@@ -90,37 +97,6 @@ terraform destroy
 
 `force_destroy` is `false` by default, so destroy fails if the bucket still has objects. Set it to `true` only for a throwaway POC.
 
-## Azure DevOps
-
-`azure-pipelines.yml` is the pipeline ADO should use after this GitHub repo is connected as the pipeline source.
-
-| Event | What runs |
-| --- | --- |
-| Pull request | `terraform fmt -check`, `validate`, `plan` |
-| Push to `main` | same (plan only) |
-| Manual run with action **apply** or **destroy** | plan, then apply/destroy after environment approval |
-
-### One-time ADO setup
-
-1. Create the GitHub repository and import/connect it in Azure DevOps (**Pipelines → New pipeline → GitHub**).
-2. Create variable group `gcp-terraform-poc`:
-
-   | Variable | Secret | Purpose |
-   | --- | --- | --- |
-   | `GCP_PROJECT_ID` | no | GCP project, e.g. `freyr-ai` |
-   | `GCP_BUCKET_NAME` | no | Globally unique bucket name |
-   | `GCP_SA_JSON` | **yes** | Service account JSON key |
-   | `TF_STATE_BUCKET` | no | Existing GCS bucket for Terraform state |
-   | `TF_STATE_PREFIX` | no | e.g. `gcp/poc-storage` |
-
-3. Create environment `gcp-poc` and add an **approval check** so apply/destroy cannot run unattended.
-4. Grant the pipeline service account:
-   - `roles/storage.admin` on the GCP project (bucket create/manage)
-   - `roles/serviceusage.serviceUsageAdmin` if the Storage API might not be enabled
-   - object admin on `TF_STATE_BUCKET`
-
-Do not check a service-account JSON into Git. ADO injects `GCP_SA_JSON` as `GOOGLE_CREDENTIALS` at runtime.
-
 ## Files
 
 | File | Purpose |
@@ -132,8 +108,6 @@ Do not check a service-account JSON into Git. ADO injects `GCP_SA_JSON` as `GOOG
 | `iam.tf` | Optional extra IAM members |
 | `outputs.tf` | Name, URI, console URL |
 | `terraform.tfvars.example` | Sample values (copy to `terraform.tfvars`) |
-| `backend.tf.example` | GCS remote state (ADO copies this to `backend.tf`) |
+| `backend.tf.example` | Optional GCS remote state block |
 | `backend.hcl.example` | Local backend config (copy to `backend.hcl`) |
-| `azure-pipelines.yml` | Azure DevOps pipeline |
-| `pipelines/run-terraform.sh` | Plan/apply/destroy used by ADO |
-| `pipelines/install-terraform.yml` | Installs the pinned Terraform version on the agent |
+| `scripts/local-terraform.sh` | Local helper for init/plan/apply/destroy |
