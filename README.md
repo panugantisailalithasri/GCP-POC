@@ -4,6 +4,10 @@ Terraform for a regional Cloud Storage bucket that mirrors `freyr-ai-pac-superag
 
 This repo is currently set up for local Terraform execution first.
 
+Additional documentation:
+
+- `docs/cursor-github-origin-guide.md` - how GitHub was connected to Cursor, how this repo was pushed from Cursor/Origin to GitHub, and what Cursor Codebase / Origin means
+
 ## What this creates
 
 | Setting | Value (matches the reference bucket) |
