@@ -4,10 +4,6 @@ Terraform for a regional Cloud Storage bucket that mirrors `freyr-ai-pac-superag
 
 This repo is currently set up for local Terraform execution first.
 
-Additional documentation:
-
-- `docs/cursor-github-origin-guide.md` - how GitHub was connected to Cursor, how this repo was pushed from Cursor/Origin to GitHub, and what Cursor Codebase / Origin means
-
 ## What this creates
 
 | Setting | Value (matches the reference bucket) |
@@ -59,14 +55,7 @@ gcloud config set project freyr-ai
 
 Bucket names are **globally unique**. If `freyr-ai-poc-storage` is taken, change `bucket_name`.
 
-Quick start:
-
-```bash
-./scripts/local-terraform.sh plan
-./scripts/local-terraform.sh apply
-```
-
-Or run Terraform directly:
+Run Terraform directly:
 
 ```bash
 terraform init
@@ -74,24 +63,7 @@ terraform plan
 terraform apply
 ```
 
-Optional remote state for local use: create a **separate** state bucket once — do not store state in the POC resource bucket:
-
-```bash
-gcloud storage buckets create gs://freyr-ai-poc-tfstate \
-  --project=freyr-ai \
-  --location=us-central1 \
-  --uniform-bucket-level-access
-
-cp backend.tf.example backend.tf
-cp backend.hcl.example backend.hcl
-# edit backend.hcl if your state bucket/prefix differ
-
-terraform init -backend-config=backend.hcl
-terraform plan
-terraform apply
-```
-
-`terraform.tfvars`, `backend.hcl`, and `backend.tf` are gitignored so local values and generated backend files stay off GitHub.
+`terraform.tfvars` is gitignored so local values stay off GitHub.
 
 Destroy:
 
@@ -112,6 +84,3 @@ terraform destroy
 | `iam.tf` | Optional extra IAM members |
 | `outputs.tf` | Name, URI, console URL |
 | `terraform.tfvars.example` | Sample values (copy to `terraform.tfvars`) |
-| `backend.tf.example` | Optional GCS remote state block |
-| `backend.hcl.example` | Local backend config (copy to `backend.hcl`) |
-| `scripts/local-terraform.sh` | Local helper for init/plan/apply/destroy |

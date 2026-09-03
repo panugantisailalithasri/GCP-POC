@@ -1,9 +1,0 @@
-# Optional remote state for local Terraform usage.
-# Local (optional):
-#   cp backend.tf.example backend.tf
-#   cp backend.hcl.example backend.hcl
-#   terraform init -backend-config=backend.hcl
-
-terraform {
-  backend "gcs" {}
-}
