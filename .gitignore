@@ -18,6 +18,8 @@ terraform.tfvars
 *.auto.tfvars.json
 backend.hcl
 backend.tf
+.env
+.env.*
 
 # Credentials
 *.json
@@ -25,6 +27,14 @@ backend.tf
 !**/tsconfig.json
 sa-key.json
 gcp-credentials.json
+credentials*.json
+service-account*.json
+*.pem
+*.key
+*.p12
+
+# Local reference assets
+assets/
 
 # OS / editor
 .DS_Store
